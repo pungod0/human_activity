@@ -51,11 +51,17 @@ to smooth data. In this example code, Butterworth low-pass filter is applied.
 def noise_removing():
     df = pd.read_csv('dataset/dataset_1.txt', sep=',', header=None)
     # Butterworth low-pass filter. You could try different parameters and other filters. 
-    b, a = signal.butter(4, 0.04, 'low', analog=False)
+    b, a = signal.butter(4, [0.2, 0.5], 'bandpass', analog=False)
     df_sitting = df[df[24] == 1].values
-    for i in range(3):
-        df_sitting[:,i] = signal.lfilter(b, a, df_sitting[:, i])
-    plt.plot(df_sitting[15000:20000, 0:3])
+    for i in range(6):
+        df_sitting[:, i] = signal.filtfilt(b, a, df_sitting[:, i])
+
+    plt.plot(df_sitting[:, 0:3])
+    plt.title('Filtered accelerometer data of Wrist in dataset1')
+    plt.show()
+
+    plt.plot(df_sitting[:, 3:6])
+    plt.title('filtered gyroscope data of Wrist in dataset1')
     plt.show()
 
 
