@@ -80,7 +80,7 @@ def feature_engineering_example():
         print('deal with dataset ' + str(i + 1))
         for c in range(1, 14):
             activity_data = df[df[24] == c].values
-            b, a = signal.butter(4, [0.2, 0.5], 'bandpass', analog=False)
+            b, a = signal.butter(4, 0.6, 'low', analog=False)
             for j in range(24):
                 activity_data[:, j] = signal.filtfilt(b, a, activity_data[:, j])
 
