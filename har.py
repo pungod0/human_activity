@@ -1,7 +1,7 @@
-import numpy as np 
-import pandas as pd 
+import numpy as np
+import pandas as pd
 from scipy import signal
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import math
 from sklearn import preprocessing
 from sklearn.neighbors import KNeighborsClassifier
@@ -15,7 +15,7 @@ from sklearn.model_selection import GridSearchCV
 #2. visualize data -> sample code given
 #3. remove signal noises -> sample code given
 #4. extract features -> sample code given
-#5. prepare training set -> sample code given 
+#5. prepare training set -> sample code given
 #6. training the given models -> sample code given
 #7. test the given models -> sample code given
 #8. print out the evaluation results -> sample code given
@@ -36,6 +36,11 @@ def data_visulization():
     df_sitting = df[df[24] == 1].values
     # In this example code, only accelerometer 1 data (column 1 to 3) is used
     plt.plot(df_sitting[:, 0:3])
+    plt.title('Accelerometer data of Wrist in dataset1')
+    plt.show()
+
+    plt.plot(df_sitting[:, 3:6])
+    plt.title('Gyroscope data of Wrist in dataset1')
     plt.show()
 
 '''
