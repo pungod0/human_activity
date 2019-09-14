@@ -72,18 +72,18 @@ machine learning models.
 Please create new functions to implement your own feature engineering. The function should output training and testing dataset.
 '''
 def feature_engineering_example():
-    training = np.empty(shape=(0, 10))
-    testing = np.empty(shape=(0, 10))
+    training = np.empty(shape=(0, 73))
+    testing = np.empty(shape=(0, 73))
     # deal with each dataset file
     for i in range(19):
         df = pd.read_csv('dataset/dataset_' + str(i + 1) + '.txt', sep=',', header=None)
         print('deal with dataset ' + str(i + 1))
         for c in range(1, 14):
             activity_data = df[df[24] == c].values
-            b, a = signal.butter(4, 0.04, 'low', analog=False)
+            b, a = signal.butter(4, [0.2, 0.5], 'bandpass', analog=False)
             for j in range(24):
-                activity_data[:, j] = signal.lfilter(b, a, activity_data[:, j])
-            
+                activity_data[:, j] = signal.filtfilt(b, a, activity_data[:, j])
+
             datat_len = len(activity_data)
             training_len = math.floor(datat_len * 0.8)
             training_data = activity_data[:training_len, :]
@@ -105,14 +105,14 @@ def feature_engineering_example():
                 # a period of time. Finally we get 9 features and 1 label to construct feature dataset. You may consider all sensors' data and extract more
 
                 feature_sample = []
-                for i in range(3):
+                for i in range(24):
                     feature_sample.append(np.min(sample_data[:, i]))
                     feature_sample.append(np.max(sample_data[:, i]))
                     feature_sample.append(np.mean(sample_data[:, i]))
                 feature_sample.append(sample_data[0, -1])
                 feature_sample = np.array([feature_sample])
                 training = np.concatenate((training, feature_sample), axis=0)
-            
+
             for s in range(testing_sample_number):
                 if s < training_sample_number - 1:
                     sample_data = testing_data[1000*s:1000*(s + 1), :]
@@ -120,7 +120,7 @@ def feature_engineering_example():
                     sample_data = testing_data[1000*s:, :]
 
                 feature_sample = []
-                for i in range(3):
+                for i in range(24):
                     feature_sample.append(np.min(sample_data[:, i]))
                     feature_sample.append(np.max(sample_data[:, i]))
                     feature_sample.append(np.mean(sample_data[:, i]))
@@ -132,6 +132,7 @@ def feature_engineering_example():
     df_testing = pd.DataFrame(testing)
     df_training.to_csv('training_data.csv', index=None, header=None)
     df_testing.to_csv('testing_data.csv', index=None, header=None)
+
 
 '''
 When we have training and testing feature set, we could build machine learning models to recognize human activities.
