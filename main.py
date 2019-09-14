@@ -99,18 +99,20 @@ def extract_features():
 
     df_training = pd.DataFrame(training)
     df_testing = pd.DataFrame(testing)
-    df_training.to_csv('training_data1.csv', index=None, header=None)
-    df_testing.to_csv('testing_data1.csv', index=None, header=None)
+    # df_training.to_csv('training_data.csv', index=None, header=None)
+    # df_testing.to_csv('testing_data.csv', index=None, header=None)
+    return df_training, df_testing
 
 
-def prepare_training_set():
-    df_training = pd.read_csv('training_data.csv', header=None)
-    df_testing = pd.read_csv('testing_data.csv', header=None)
+def prepare_training_set(df_training: pd.DataFrame, df_testing: pd.DataFrame):
     _, n_features = df_training.shape
 
     # Labels should start from 0 in sklearn
-    y_train = df_training[n_features - 1].values - 1
-    y_test = df_testing[n_features - 1].values - 1
+    y_train = df_training[n_features - 1].values - 1.0
+    y_train = np.array([int(item) for item in y_train])
+
+    y_test = df_testing[n_features - 1].values - 1.0
+    y_test = np.array([int(item) for item in y_test])
 
     df_training = df_training.drop([n_features - 1], axis=1)
     x_train = df_training.values
@@ -169,6 +171,7 @@ if __name__ == '__main__':
     # make sitting data smooth
     smooth_data = remove_noises(data_[data_[24] == 1][list(range(24))])
     visualize_data(pd.DataFrame(smooth_data))
-    extract_features()
-    train_x, train_y, test_x, test_y = prepare_training_set()
+
+    df_training, df_testing = extract_features()
+    train_x, train_y, test_x, test_y = prepare_training_set(df_testing=df_testing, df_training=df_training)
     training_models(train_x, train_y, test_x, test_y)
